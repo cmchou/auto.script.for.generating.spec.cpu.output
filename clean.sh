@@ -65,17 +65,20 @@ for a in $Output_Directories; do
 	#echo $temp_folder_name
 	RSFPATH="$temp_folder_name/*.rsf"	
 	for b in $RSFPATH; do
-		echo $b
+		#echo $b
 		#Add "none" for fp results
 		sed -i -e 's/spec.cpu2006.sw_other: --/spec.cpu2006.sw_other: None/g' $b
 		
 		#remove the unnecessary memory spec description
-		if grep -Fxq "spec.cpu2006.hw_memory003" $b 
+		#echo $(grep -Fxq "spec.cpu2006.hw_memory002" $b)
+		if grep -q "spec.cpu2006.hw_memory003" $b 
 		then
+			#echo "003 exists"
     			# code if found
 			sed -i '/spec.cpu2006.hw_memory003/d' $b
 			sed -i '/spec.cpu2006.hw_memory002/d' $b
 		else
+			#echo "doesn't have 003"
     			# code if not found
                 	sed -i '/spec.cpu2006.hw_memory002/d' $b
                 	sed -i '/spec.cpu2006.hw_memory001/d' $b
