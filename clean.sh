@@ -18,19 +18,24 @@ remove_Target='!(*.rsf)'
 Output_Directories="$Working_Directory/*"
 for a in $Output_Directories; do
 	
-	#the following part rename the folder name
+	#=============================the following part rename the folder name==========================
 	echo $a
 	temp_folder_name=${a/"Result_HT-"/}
 	temp_folder_name=${temp_folder_name/"_COD-"/}
 	temp_folder_name=${temp_folder_name/"_ES-"/}
 	temp_folder_name=${temp_folder_name//"Enable"/E}
 	temp_folder_name=${temp_folder_name//"Disable"/D}	
-	echo ${temp_folder_name:$(expr length $temp_folder_name)-12:3}	
-	temp_folder_name=${temp_folder_name:0:$(expr length $temp_folder_name)-12}${temp_folder_name:$(expr length $temp_folder_name)-12:3}
+	echo ${temp_folder_name:$(expr length $temp_folder_name)-12}	
+	
+	#output folder with configs and date(eg., EDE-150102AM)
+	temp_folder_name=${temp_folder_name:0:$(expr length $temp_folder_name)-12}${temp_folder_name:$(expr length $temp_folder_name)-12}
+	#output folder with configs only (eg., EDE)
+	#temp_folder_name=${temp_folder_name:0:$(expr length $temp_folder_name)-12}${temp_folder_name:$(expr length $temp_folder_name)-12:3}
+
 	mv $a $temp_folder_name 
 	cd $temp_folder_name
         
-	#The following part grep the score from the *.txt file
+	#=============================The following part grep the score from the *.txt file================
 	#grep for int.sp
         int_sp=$(grep SPECint *.txt | grep base2006 | grep -v rate | awk '{print $3}')
         int_sp_peak=$(grep SPECint2006 *.txt | awk '{print $3}')
@@ -61,7 +66,21 @@ for a in $Output_Directories; do
 	RSFPATH="$temp_folder_name/*.rsf"	
 	for b in $RSFPATH; do
 		echo $b
+		#Add "none" for fp results
 		sed -i -e 's/spec.cpu2006.sw_other: --/spec.cpu2006.sw_other: None/g' $b
+		
+		#remove the unnecessary memory spec description
+		if grep -Fxq "spec.cpu2006.hw_memory003" $b 
+		then
+    			# code if found
+			sed -i '/spec.cpu2006.hw_memory003/d' $b
+			sed -i '/spec.cpu2006.hw_memory002/d' $b
+		else
+    			# code if not found
+                	sed -i '/spec.cpu2006.hw_memory002/d' $b
+                	sed -i '/spec.cpu2006.hw_memory001/d' $b
+
+		fi
 	done
 	
 
