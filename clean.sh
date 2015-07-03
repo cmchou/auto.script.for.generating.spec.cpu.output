@@ -1,20 +1,19 @@
 #!/bin/bash
 Working_Directory=$1
 
+#initialize variable for finding the highest scores
 declare -i highest_int_sp=0
-highest_int_sp_folder="aabb"
+highest_int_sp_folder=""
 declare -i highest_fp_sp=0
 highest_fp_sp_folder=""
 declare -i highest_int_rate=0
 highest_int_rate_folder=""
 declare -i highest_fp_rate=0
 highest_int_rate_folder=""
-#echo $highest_int_sp
-#echo $highest_int_sp_folder
-
 remove_Target='!(*.rsf)'
 
-#echo $1
+
+#verify if the input path has a padding / or not, if so then remove it
 folder_length=$(expr length $1)
 #echo ${1:$folder_length-1} #get the last character
 #last_char=${1:$folder_length-1}
@@ -26,8 +25,10 @@ then
 	Working_Directory=${1:0:$folder_length-1}
 	#echo $Working_Directory
 fi
+
+
+
 cd $1
-#pwd #for testing current directory
 Output_Directories="$Working_Directory/*"
 for a in $Output_Directories; do
 	
@@ -142,6 +143,16 @@ for a in $Output_Directories; do
                 	sed -i '/spec.cpu2006.hw_memory001/d' $b
 
 		fi
+		
+		#modify the thead per core setting
+		echo $temp_folder_name
+		echo ${temp_folder_name:${#temp_folder_name}-12:1}
+		if [ ${temp_folder_name:${#temp_folder_name}-12:1} == "D" ]
+		then
+			sed -i -e 's/spec.cpu2006.hw_nthreadspercore: 2/spec.cpu2006.hw_nthreadspercore: 1/g' $b
+			echo "modified 1 files for hyper-threading setting"	
+		fi
+
 	done
 
 done
@@ -160,21 +171,21 @@ echo $highest_fp_rate_folder
 #copy the highest cint.sp.rsf for submission
 rsf_int_sp="$highest_int_sp_folder/CINT*.rsf"
 for a in $rsf_int_sp; do
-	echo $a
+	#echo $a
 	cp $a ../cint.sp.rsf
 done
 
 #copy the highest cfp.sp.rsf for submission
 rsf_fp_sp="$highest_fp_sp_folder/CFP*.rsf"
 for a in $rsf_fp_sp; do
-	echo $a
+	#echo $a
 	cp $a ../cfp.sp.rsf
 done
 
 #copy the highest cint.rate.rsf for submission
 rsf_int_rate="$highest_int_rate_folder/CINT*.rsf"
 for a in $rsf_int_rate; do
-        echo $a
+        #echo $a
 	if [ -e "../cint.rate.rsf" ] 
 	then
 		#jump out of the for loop
@@ -187,7 +198,7 @@ done
 #copy the highest cfp.rate.rsf for submission
 rsf_fp_rate="$highest_fp_rate_folder/CFP*.rsf"
 for a in $rsf_fp_rate; do
-        echo $a
+        #echo $a
 	if [ -e "../cfp.rate.rsf" ]
 	then
 		#jump out of the for loop
