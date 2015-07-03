@@ -145,12 +145,12 @@ for a in $Output_Directories; do
 		fi
 		
 		#modify the thead per core setting
-		echo $temp_folder_name
-		echo ${temp_folder_name:${#temp_folder_name}-12:1}
+		#echo $temp_folder_name
+		#echo ${temp_folder_name:${#temp_folder_name}-12:1}
 		if [ ${temp_folder_name:${#temp_folder_name}-12:1} == "D" ]
 		then
 			sed -i -e 's/spec.cpu2006.hw_nthreadspercore: 2/spec.cpu2006.hw_nthreadspercore: 1/g' $b
-			echo "modified 1 files for hyper-threading setting"	
+			#echo "modified 1 files for hyper-threading setting"	
 		fi
 
 	done
