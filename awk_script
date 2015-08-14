@@ -1,0 +1,57 @@
+#!/usr/bin/awk -f 
+BEGIN {
+        #print FILENAME	
+	FILENAME=ARGV[1]
+	#print FILENAME
+	subbench_name=ARGV[2]
+	num_of_run=ARGV[3]
+	delete ARGV[2] #delete this argv so awk won't treat it as an input file
+	delete ARGV[3] #delete this argv so awk won't treat it as an input file
+	
+	count=0
+	median=0
+	median_count=0
+	avg=0
+	sum=0
+	slowest=0
+	fastest=9999
+	#print "program is running......"
+	print ARGC
+	print ARGV[0]
+	print ARGV[1]
+	print ARGV[2]
+
+}
+
+{ #main program
+	if ($4 == subbench_name && $8 == num_of_run)
+	{
+		#print $19
+		sum=sum+$19
+		count=count+1
+		if ($19 > slowest)
+		{
+			slowest=$19
+
+		}
+		if ($19 < fastest)
+		{
+			fastest=$19
+		}
+	}
+
+}
+
+END {
+	#print "sum=",sum
+	print "output sequence"
+	print "count="
+	print "avg="
+	print "slowest="
+	print "fastest="
+	print count
+	print sum/count
+	print slowest
+	print fastest
+}
+
