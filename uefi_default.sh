@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh root@$1 'cd /home/asu;./asu64 loaddefault;./asu64 set Processors.C1EnhancedMode Disable;./asu64 set Processors.IntelVirtualizationTechnology Disable;./asu64 set Processors.Hyper-Threading Enable;./asu64 set Processors.EarlySnoopPreference Disable;./asu64 set Processors.CODPreference Enable;./asu64 set Power.ActiveEnergyManager "Capping Disable";./asu64 set Memory.PatrolScrub Disable;./asu64 set Memory.MemoryDataScrambling Disable;reboot'
